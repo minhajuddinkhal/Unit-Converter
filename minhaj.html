@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Unit Converter</h1>
+
+    <!-- Input Value -->
+    <input type="number" id="inputValue" placeholder="Enter value">
+
+    <!-- Select Category -->
+    <select id="category">
+        <option value="">Select Category</option>
+        <option value="length">Length</option>
+        <option value="mass">Mass</option>
+        <option value="temperature">Temperature</option>
+        <option value="currency">Currency</option>
+        <option value="time">Time</option>
+        <option value="frequency">Frequency</option>
+        <option value="current">Current</option>
+        <option value="acceleration">Acceleration</option>
+        <option value="angle">Angle</option>
+        <option value="pressure">Pressure</option>
+        <option value="sound">Sound</option>
+        <option value="density">Density</option>
+        <option value="speed">Speed</option>
+        <option value="volume">Volume</option>
+    </select>
+
+    <!-- Select Unit From -->
+    <select id="unitFrom">
+        <option value="">Select Unit From</option>
+    </select>
+
+    <!-- Select Unit To -->
+    <select id="unitTo">
+        <option value="">Select Unit To</option>
+    </select>
+
+    <button id="convertBtn">Convert</button>
+
+    <h2 id="result">The value of result: </h2>
+</div>
+
+<script>
+    // Units Data
+    const units = {
+        length: ["Meter", "Kilometer", "Centimeter"],
+        mass: ["Kilogram", "Gram", "Pound"],
+        temperature: ["Celsius", "Fahrenheit", "Kelvin"],
+        currency: ["USD", "EUR", "BDT"],
+        time: ["Second", "Minute", "Hour"],
+        frequency: ["Hertz", "Kilohertz", "Megahertz"],
+        current: ["Ampere", "Milliampere"],
+        acceleration: ["Meter/second²", "Kilometer/hour²"],
+        angle: ["Degree", "Radian", "Gradian"],
+        pressure: ["Pascal", "Bar", "Atmosphere"],
+        sound: ["Decibel", "Bel"],
+        density: ["Kilogram/m³", "Gram/cm³", "Pound/ft³"],
+        speed: ["Meter/second", "Kilometer/hour", "Miles/hour"],
+        volume: ["Liter", "Milliliter", "Cubic meter"]
+    };
+
+    // Update Units Based on Category
+    document.getElementById('category').addEventListener('change', function() {
+        const category = this.value;
+        const unitFrom = document.getElementById('unitFrom');
+        const unitTo = document.getElementById('unitTo');
+
+        // Clear previous options
+        unitFrom.innerHTML = '<option value="">Select Unit From</option>';
+        unitTo.innerHTML = '<option value="">Select Unit To</option>';
+
+        // Add new options
+        if (units[category]) {
+            units[category].forEach(unit => {
+                const optionFrom = document.createElement('option');
+                optionFrom.value = unit.toLowerCase().replace(/\s+/g, '');
+                optionFrom.textContent = unit;
+                unitFrom.appendChild(optionFrom);
+
+                const optionTo = document.createElement('option');
+                optionTo.value = unit.toLowerCase().replace(/\s+/g, '');
+                optionTo.textContent = unit;
+                unitTo.appendChild(optionTo);
+            });
+        }
+    });
+
+    // Convert Button Click
+    document.getElementById('convertBtn').addEventListener('click', function() {
+        const inputValue = parseFloat(document.getElementById('inputValue').value);
+        const category = document.getElementById('category').value;
+        const unitFrom = document.getElementById('unitFrom').value;
+        const unitTo = document.getElementById('unitTo').value;
+
+        if (isNaN(inputValue)) {
+            alert("Please enter a valid number");
+            return;
+        }
+
+        if (!category || !unitFrom || !unitTo) {
+            alert("Please select valid units");
+            return;
+        }
+
+        let result;
+
+        // Conversion Logic
+        if (category === "length" && unitFrom === "meter" && unitTo === "kilometer") {
+            result = inputValue / 1000; // Meters to Kilometers
+        } else if (category === "mass" && unitFrom === "kilogram" && unitTo === "gram") {
+            result = inputValue * 1000; // Kilograms to Grams
+        } else if (category === "temperature" && unitFrom === "celsius" && unitTo === "fahrenheit") {
+            result = (inputValue * 9/5) + 32; // Celsius to Fahrenheit
+        } else if (category === "currency" && unitFrom === "usd" && unitTo === "eur") {
+            result = inputValue * 0.85; // USD to EUR
+        } else if (category === "time" && unitFrom === "second" && unitTo === "minute") {
+            result = inputValue / 60; // Seconds to Minutes
+        } else if (category === "frequency" && unitFrom === "hertz" && unitTo === "kilohertz") {
+            result = inputValue / 1000; // Hertz to Kilohertz
+        } else if (category === "current" && unitFrom === "ampere" && unitTo === "milliampere") {
+            result = inputValue * 1000; // Ampere to Milliampere
+        } else if (category === "acceleration" && unitFrom === "meter/second²" && unitTo === "kilometer/hour²") {
+            result = inputValue * 12960; // m/s² to km/h²
+        } else if (category === "angle" && unitFrom === "degree" && unitTo === "radian") {
+            result = inputValue * (Math.PI / 180); // Degree to Radian
+        } else if (category === "pressure" && unitFrom === "pascal" && unitTo === "bar") {
+            result = inputValue / 100000; // Pascal to Bar
+        } else if (category === "sound" && unitFrom === "decibel" && unitTo === "bel") {
+            result = inputValue / 10; // Decibel to Bel
+        } else if (category === "density" && unitFrom === "kilogram/m³" && unitTo === "gram/cm³") {
+            result = inputValue / 1000; // kg/m³ to g/cm³
+        } else if (category === "speed" && unitFrom === "meter/second" && unitTo === "kilometer/hour") {
+            result = inputValue * 3.6; // m/s to km/h
+        } else if (category === "volume" && unitFrom === "liter" && unitTo === "milliliter") {
+            result = inputValue * 1000; // Liters to Milliliters
+        } else {
+            result = inputValue; // No conversion needed or invalid conversion
+        }
+
+        document.getElementById('result').textContent = "The value of result: " + result;
+    });
+</script>
+
+</body>
+</html>
